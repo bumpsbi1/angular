@@ -1,28 +1,35 @@
 var app = angular.module('codecraft', []);
 
-app.controller('PersonDetailController', function($scope){
-  
+
+
+app.controller('PersonDetailController', function ($scope, ContactService) {
+	$scope.contacts = ContactService;
 });
 
-app.controller('PersonListController', function($scope){
+app.controller('PersonListController', function ($scope, ContactService) {
 
-  $scope.search = "";
-  $scope.order = "email";
-  $scope.selectedPerson = null;
+	$scope.search = "";
+	$scope.order = "email";
+	$scope.contacts = ContactService;
 
-  $scope.selectPerson = function (person) {
-    $scope.selectedPerson = person;
-  };
+	$scope.sensitiveSearch = function (person) {
+		if ($scope.search) {
+			return person.name.indexOf($scope.search) == 0 ||
+				person.email.indexOf($scope.search) == 0;
+		}
+		return true;
+	};
 
-  $scope.sensitiveSearch = function(person) {
-    if ($scope.search){
-      return person.name.indexOf($scope.search) == 0 || 
-             person.email.indexOf($scope.search) == 0;
-    }
-    return true;
-  };
+});
 
-  $scope.persons = [
+app.service('ContactService', function () {
+
+	return {
+		'addPerson': function (person) {
+			this.persons.push(person);
+		},
+		'selectedPerson': null,
+		'persons': [
     
       
         {
@@ -5028,4 +5035,7 @@ app.controller('PersonListController', function($scope){
 
   ]
 
-})
+
+	};
+
+});
